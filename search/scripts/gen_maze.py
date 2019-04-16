@@ -2,8 +2,8 @@ import numpy as np
 import argparse
 
 def copy_empty_world():
-    f_in = open('/home/abhyudaya/catkin_ws/src/search/worlds/new_empty_world.sdf', 'r')
-    f_out = open('/home/abhyudaya/catkin_ws/src/search/worlds/new_maze.sdf', 'w')
+    f_in = open('/home/abhyudaya/catkin_ws/src/search/worlds/empty_world.sdf', 'r')
+    f_out = open('/home/abhyudaya/catkin_ws/src/search/worlds/maze.sdf', 'w')
     for line in f_in:
         f_out.write(line)
     f_in.close()
@@ -24,7 +24,6 @@ def add_walls(f_out, length):
     for i in range(4):
         f_out.write('<model name=\'wall{}\'>\n'.format(i+1))
         f_out.write('<pose>{} {} 0 0 -0 {}</pose>\n'.format(wall_dimensions[i][0], wall_dimensions[i][1], wall_dimensions[i][2]))
-        # f_out.write('<scale>{} {} 0.03</scale>\n'.format(wall_dimensions[i][3], wall_dimensions[i][4]))
         f_out.write('<link name=\'link\'>\n')
         f_out.write('<pose>{} {} 0.42 -0 0 {}</pose>\n'.format(wall_dimensions[i][0], wall_dimensions[i][1], wall_dimensions[i][2]))
         f_out.write('<velocity>0 0 0 0 -0 0</velocity>\n<acceleration>0 0 0 0 -0 0</acceleration>\n<wrench>0 0 0 0 -0 0</wrench>\n</link>\n</model>\n')
@@ -40,8 +39,7 @@ def add_obstacle_description(f_out, coords):
 
 def add_obstacle(f_out, x, y):
     f_out.write('<model name=\'can{}{}\'>\n'.format(x, y))
-    f_out.write('<pose>{} {} -2e-06 1e-06 0 -9.5e-05</pose>\n'.format(x, y))
-    # f_out.write('<scale>1 1 1</scale>\n<link name=\'link\'>\n')              
+    f_out.write('<pose>{} {} -2e-06 1e-06 0 -9.5e-05</pose>\n'.format(x, y))             
     f_out.write('<link name=\'link\'>\n')              
     f_out.write('<pose>{} {} 0.114998 1e-06 0 -9.5e-05</pose>\n'.format(x, y))
     f_out.write('<velocity>0 0 0 0 -0 0</velocity>\n<acceleration>0 0 -9.8 0 -0 0</acceleration>\n<wrench>0 0 -3.822 0 -0 0</wrench>\n</link>\n</model>\n')
@@ -63,7 +61,6 @@ def add_goal_description(f_out, coord):
 def add_goal(f_out, coord):
     f_out.write('<model name=\'goal\'>\n')
     f_out.write('<pose>{} {} -9e-06 -1e-06 -4e-06 0</pose>\n'.format(coord, coord))
-    # f_out.write('<scale>1 1 1</scale>\n<link name=\'goal::link\'>\n')
     f_out.write('<link name=\'goal::link\'>\n')
     f_out.write('<pose>{} {} 0.114991 -1e-06 -4e-06 0</pose>\n'.format(coord, coord))
     f_out.write('<velocity>0 0 0 0 -0 0</velocity>\n<acceleration>0 0 -9.8 0 -0 0</acceleration>\n<wrench>0 0 -9.8 0 -0 0</wrench>\n</link>\n</model>\n')
@@ -91,9 +88,8 @@ def generate_blocked_edges(grid_dimension, n_obstacles, seed, myscale=1):
             coords.append((x, y+myscale/2-offset))
             add_obstacle(f_out, x, y+myscale/2-offset)
             count += 1
-#     add_goal(f_out, grid_dimension*myscale)
+
     f_out.write('</state>')
-#     add_goal_description(f_out, grid_dimension*myscale)
     add_walls_description(f_out)
     add_obstacle_description(f_out, coords)
     f_out.write('</world>\n</sdf>')

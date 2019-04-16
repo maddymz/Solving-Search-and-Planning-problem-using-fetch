@@ -1,19 +1,14 @@
 <launch>
 
-  <!-- Start navigation -->
-  <include file="$(find search)/launch/demo_fetch_nav.launch" />
+  <!-- Navigation parameter files -->
+  <arg name="move_base_include" default="$(find fetch_navigation)/launch/include/move_base.launch.xml" />
 
-  <!-- Start MoveIt -->
-  <!-- <include file="$(find fetch_moveit_config)/launch/move_group.launch" > -->
-    <!-- <arg name="info" value="true"/>publish grasp markers -->
-  <!-- </include> -->
-
-  <!-- Start Perception -->
-  <!-- <node name="basic_grasping_perception" pkg="simple_grasping" type="basic_grasping_perception" > -->
-    <!-- <rosparam command="load" file="$(find fetch_gazebo_demo)/config/simple_grasping.yaml" /> -->
-  <!-- </node> -->
-
-  <!-- Drive to the table, pick stuff up -->
-  <!-- <node name="demo" pkg="fetch_gazebo_demo" type="demo.py" output="screen" /> -->
+  <node pkg="slam_karto" type="slam_karto" name="slam_karto" output="screen">
+    <remap from="scan" to="base_scan" />
+  </node>
+  <!-- move the robot -->
+  <include file="$(arg move_base_include)" >
+    <arg name="name" value="fetch" />
+  </include>
 
 </launch>
