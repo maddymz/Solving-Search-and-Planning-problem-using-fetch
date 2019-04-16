@@ -36,13 +36,4 @@ def write_pddl(path,object_dict):
 
 
 if __name__ == "__main__":
-	# # object_dict = {"books" : { "b1" : { "size" : "large","subject" : "s1" , "loc" : (1,2)},\
-	# 							"b2" : { "size" : "small","subject" : "s2" , "loc" : (2,2)}\
-	# 						},\
-	# 				"bins" : {"bin1" : { "size" : "large","subject" : "s1" , "loc" : (3,2)},\
-	# 							"bin2" : { "size" : "small","subject" : "s2" , "loc" : (4,2)}\
-	# 						}\
-	# 			}
-	object_dict = pickle.load(open("/home/naman/catkin_ws/src/planning/object_dict.p","rb"))
-	fhandle = open("temp_problem.pddl","w")
-	write_pddl(fhandle,object_dict)
+	pass

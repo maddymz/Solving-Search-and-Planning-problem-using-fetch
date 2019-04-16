@@ -70,9 +70,7 @@ class GraspingClient(object):
 		goal.plan_grasps = True
 		self.find_client.send_goal(goal)
 		self.find_client.wait_for_result(rospy.Duration(5.0))
-		find_result = self.find_client.get_result()
-		# print(find_result)
-		
+		find_result = self.find_client.get_result()		
 
 		# remove previous objects
 		for name in self.scene.getKnownCollisionObjects():
@@ -111,32 +109,16 @@ class GraspingClient(object):
 		self.objects = find_result.objects
 		self.surfaces = find_result.support_surfaces
 		print("objects: ",len(self.objects))
-		# print("surfaces: ",len(self.surfaces))
 	
 	def getGraspableCube(self):
 		graspable = None
 		graspable_objects = []
 		for obj in self.objects:
-			# print(obj.object.name)
-			# print("grasps: ", len(obj.grasps))
 			# need grasps
 			if len(obj.grasps) < 1:
 				continue
-			# check size
-			# if obj.object.primitives[0].dimensions[0] < 0.05 or \
-			#    obj.object.primitives[0].dimensions[0] > 0.07 or \
-			#    obj.object.primitives[0].dimensions[0] < 0.05 or \
-			#    obj.object.primitives[0].dimensions[0] > 0.07 or \
-			#    obj.object.primitives[0].dimensions[0] < 0.05 or \
-			#    obj.object.primitives[0].dimensions[0] > 0.07:
-			#     continue
-			# # has to be on table
-			# if obj.object.primitive_poses[0].position.z < 0.5:
-			#     continue
 			graspable_objects.append((obj.object, obj.grasps))
-			# return obj.object, obj.grasps
-		# nothing detected
-		# return None, None
+
 		return graspable_objects
 
 	def getSupportSurface(self, name):
@@ -149,15 +131,11 @@ class GraspingClient(object):
 		pass
 
 	def pick(self, block, grasps):
-		# print("name: ", block.name)
-		# print("grasps: ", grasps)
-		# print("surface: ",block.support_surface)
 		success, pick_result = self.pickplace.pick_with_retry(block.name,
 															  grasps,
 															  support_name=block.support_surface,
 															  scene=self.scene)
 		self.pick_result = pick_result
-		print(self.pick_result)
 		return success
 
 	def place(self, block, pose_stamped):
@@ -236,17 +214,10 @@ class RobotActionsServer:
 
 	def execute_place_action(self,req):
 		cube_name = req.book_name
-		# bin_name = req.bin_name
 		robot_state = (req.x , req.y , req.orientation)
-		print("Executing Place ", cube_name)
-		print("at ", robot_state[0], robot_state[1])
-		print("place loc: ", self.object_dict["place_loc"])
-		# print(cube_name)
-		# print(self.robot_at_load_location(robot_state, self.object_dict["place_loc"]))
-		# print(cube_name in self.object_dict["cubes"])
+
 		if cube_name in self.object_dict["cubes"]:
 			if self.robot_at_load_location(robot_state, self.object_dict["place_loc"]):
-			# if (robot_state[0],robot_state[1]) in self.object_dict["place_loc"]:
 				while not rospy.is_shutdown():
 					rospy.loginfo("Placing object...")
 					pose = PoseStamped()
@@ -260,21 +231,7 @@ class RobotActionsServer:
 						# break
 					else:
 						rospy.logwarn("Placing failed.")
-			else:
-				print("robot not at load location")
-		else:
-			print("unknown cube")
-			
 
-		# if book_name in self.object_dict["books"] and bin_name in self.object_dict["bins"]:
-		# 	if (robot_state[0],robot_state[1]) in self.object_dict["bins"][bin_name]["load_loc"]:
-		# 		if self.object_dict["books"][book_name]["size"] == self.object_dict["bins"][bin_name]["size"]:
-					# goal_loc = list(self.object_dict["bins"][bin_name]["loc"])
-					# goal_loc[0] = goal_loc[0] + 0.5
-					# goal_loc[1] = goal_loc[1] + 0.5
-					# self.change_state(book_name, goal_loc + [3])
-					# self.empty = True
-				
 		self.status_publisher.publish(self.status)
 		return self.failure
 
@@ -284,50 +241,31 @@ class RobotActionsServer:
 		if cube_name in self.object_dict["cubes"]:
 			if (robot_state[0],robot_state[1]) in self.object_dict["cubes"][cube_name]["load_loc"]:
 				
-				# TODO: execute pick
-				# torso_action = FollowTrajectoryClient("torso_controller", ["torso_lift_joint"])
-				# self.head_action = PointHeadClient()
-				# torso_action.move_to([1.872020, ])
-				# x = self.object_dict["cubes"][cube_name]["loc"][0] # 1.000069
-				# y = self.object_dict["cubes"][cube_name]["loc"][1] #1.651821
-				# z = 0.029231
-				# head_action.look_at(x, y, z, "map")
-
 				pick_success = False
 				while not pick_success:
-					x = self.object_dict["cubes"][cube_name]["loc"][0] # 1.000069
-					y = self.object_dict["cubes"][cube_name]["loc"][1] #1.651821
+					x = self.object_dict["cubes"][cube_name]["loc"][0] 
+					y = self.object_dict["cubes"][cube_name]["loc"][1] 
 					z = 0.029231
 					self.head_action.look_at(x, y, z, "map")
-					
-					# while not rospy.is_shutdown():
-				
+									
 					rospy.loginfo("Searching Graspable objects...")
 					self.grasping_client.updateScene()
-					# cube, grasps = grasping_client.getGraspableCube()
+
 					graspable_objects = self.grasping_client.getGraspableCube()
 					if len(graspable_objects) == 0:
 						rospy.logwarn("Perception failed.")
-						# continue
 
 					# Pick the block
 					for obj in graspable_objects:
 						if self.grasping_client.pick(obj[0], obj[1]):
 							pick_success = True
 							self.cube = obj[0]
-						# grasping_client.pick(cube, grasps)
 						else:
+							pick_success = False
 							rospy.logwarn("Grasping failed.")
 				
 				self.grasping_client.tuck()
 
-				# quat = tf.transformations.quaternion_from_euler(r,p,s)
-				# move_base.goto(x,y,quat, goto_callback)
-				# rospy.Rate(3).sleep()
-
-				# if self.empty:
-				# 	self.change_state(book_name,robot_state[:2]+[2])
-				# 	self.empty = False
 				_ = self.remove_edge(cube_name)
 				self.status_publisher.publish(self.status)
 				return self.success

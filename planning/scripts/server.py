@@ -12,7 +12,7 @@ import pickle
 
 
 root_path = "/home/abhyudaya/catkin_ws/src/planning/"
-books = None
+cubes = None
 mazeInfo = None
 parser = argparse.ArgumentParser()
 parser.add_argument('-c', help='for providing no. of cubes', metavar='5', action='store', dest='n_cubes', default=5, type=int)
@@ -132,20 +132,16 @@ def handle_get_goal_state(req):
 
 def remove_blocked_edge(req):
 	bookname = req.bookname
-	global books
+	global cubes
 	global mazeInfo
-	load_location = books["cubes"][bookname]["load_loc"]
+	load_location = cubes["cubes"][bookname]["load_loc"]
 	x = load_location[0][0]
 	y = load_location[0][1]
 	mazeInfo[1].remove((x, y, x+0.5, y))
 	mazeInfo[1].remove((x+0.5, y, x+1, y))
 	mazeInfo[1].remove((x+1, y, x+1.5, y))
-	
-	# if location_of_blocked_edge_list[0][0] <= location_of_blocked_edge_list[1][0] and location_of_blocked_edge_list[0][1] <= location_of_blocked_edge_list[1][1]:
-	# 	blocked_edge = (location_of_blocked_edge_list[0][0], location_of_blocked_edge_list[0][1], location_of_blocked_edge_list[1][0], location_of_blocked_edge_list[1][1])
-	# else:
-	# 	blocked_edge = (location_of_blocked_edge_list[1][0], location_of_blocked_edge_list[1][1], location_of_blocked_edge_list[0][0], location_of_blocked_edge_list[0][1])
-	# mazeInfo[1].remove(blocked_edge)
+	mazeInfo[1].remove((x+0.5, y-0.5, x+0.5, y))
+	mazeInfo[1].remove((x+0.5, y, x+0.5, y+0.5))
 	return "1"
 
 def server():
@@ -160,28 +156,15 @@ def server():
 if __name__ == "__main__":
     args = parser.parse_args()
     n_cubes = args.n_cubes
-    # n_books = args.n_books
     seed = args.seed
     print n_cubes
-    # print n_books
-    # if n_subjects > 20:
-    # 	print('Maximum no. of subjects available is: 20')
-    # 	exit()
-    # book_sizes = 2
-    # book_count_of_each_subject = n_books * book_sizes
-    # book_count_list = [n_books] * n_subjects * book_sizes
-    # number_of_trollies = n_subjects * 2
-    # grid_size = max((((book_count_of_each_subject * n_subjects) / 4) // 1 ) + 1, ((number_of_trollies/4)*7), 10)
     grid_size = 6
     if(n_cubes > 6):
 		grid_size = n_cubes
 
-    books, mazeInfo = generate_blocked_edges(grid_size, n_cubes, seed, root_path, 0.5)
+    cubes, mazeInfo = generate_blocked_edges(grid_size, n_cubes, seed, root_path, 0.5)
     path = root_path + "/problem.pddl"
-    problem_generator.write_pddl(path ,books) #TODO: fix pddl
-    # pickle.dump(books,out_file)
+    problem_generator.write_pddl(path ,cubes)
     rospy.init_node('server')
-    RobotActionsServer(books)
-    # rospy.sleep(3)
-   	# pprint.pprint(books)
+    RobotActionsServer(cubes)
     server()

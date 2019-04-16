@@ -22,7 +22,6 @@ class MoveBaseClient(object):
         rospy.loginfo("Move base connected")
 
     def goto(self, x, y, quat, frame="map"):
-        # global pose
         print("going to ", x , y, quat)
         move_goal = MoveBaseGoal()
         move_goal.target_pose.pose.position.x = x
@@ -36,18 +35,11 @@ class MoveBaseClient(object):
         else:
             move_goal.target_pose.pose.orientation.w = quat[3]
         
-        # move_goal.target_pose.pose.orientation.z = sin(theta/2.0)
-        # move_goal.target_pose.pose.orientation.w = cos(theta/2.0)
-        
         move_goal.target_pose.header.frame_id = frame
         move_goal.target_pose.header.stamp = rospy.Time.now()
 
-        # TODO wait for things to work
-        
         self.client.send_goal(move_goal)
-        print("goal sent")
         self.client.wait_for_result()
-        print("result done")
 
 class moveFetch:
 	def __init__(self):
@@ -97,8 +89,6 @@ class moveFetch:
 			else:
 				y-=mazeScale
 		elif action == "TurnCW":
-			# euler = tf.transformations.euler_from_quaternion(quat)
-			# quat = tf.transformations.quaternion_from_euler(euler[0], euler[1], euler[2] - math.pi/2.0)
 			if orient == "EAST":
 				orient = "SOUTH"
 			elif orient == "WEST":
@@ -108,8 +98,6 @@ class moveFetch:
 			else:
 				orient = "EAST"
 		elif action == "TurnCCW":
-			# euler = tf.transformations.euler_from_quaternion(quat)
-			# quat = tf.transformations.quaternion_from_euler(euler[0], euler[1], euler[2] + math.pi/2.0)
 			if orient == "EAST":
 				orient = "NORTH"
 			elif orient == "WEST":
@@ -118,11 +106,10 @@ class moveFetch:
 				orient = "EAST"
 			else:
 				orient = "WEST"
-		quat = (self.robot_pose.orientation.x, self.robot_pose.orientation.y, self.orientation_dictionary[orient], 1)#self.robot_pose.orientation.w)
+		quat = (self.robot_pose.orientation.x, self.robot_pose.orientation.y, self.orientation_dictionary[orient], 1)
 		return x, y, quat, orient
 
 	def action_callback(self, data):
-		# global robot_x, robot_y, robot_orient
 		actions = data.data.split('_')
 		print(actions)
 		for action in actions: 

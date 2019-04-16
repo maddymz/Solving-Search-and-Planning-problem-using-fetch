@@ -66,9 +66,7 @@ class Executioner:
                 print("Unsuccessful Pick")
         elif(action[0] == "place"):
             cube_name = action[1]
-            # bin_name = action[2]
             response = problem.execute_place_action(cube_name, '', self.current_state)
-            # response = problem.execute_place_action(book_name, bin_name, self.current_state)
             if(response == -1):
                 print("Unsuccessful Place")
 
@@ -96,9 +94,6 @@ class Executioner:
         states = []
         for location in locations:
             states.append(problem.State(location[0], location[1], "EAST"))
-            # states.append(problem.State(location[0], location[1], "WEST"))
-            # states.append(problem.State(location[0], location[1], "NORTH"))
-            # states.append(problem.State(location[0], location[1], "SOUTH"))
         return states
 
     def get_path_gbfs(self, init_state, goal_locations):
@@ -190,28 +185,19 @@ class Executioner:
         current_state = problem.get_initial_state()
         actions = []
         f = open(self.plan_path, mode='r')
-        # f = ["move fetch x book_1_iloc", "pick book_1"]
         for line in f:
-            # print(line)
             line = line.strip() #remove whitespace
             line = line[1:] #remove brackets
             line = line[:-1]
             args = line.split(' ')
-            # print(args)
             if(args[0] == "move"): #perform downward refinement
                 from_location = args[2]
                 to_location = args[3]
-                print(from_location, to_location)
                 load_locations = self.get_load_locations(to_location)
-                
-                print(current_state.x, current_state.y, current_state.orientation, " to ", load_locations)
                 move_seq, current_state, goal_reached = self.get_path_gbfs(current_state, load_locations)
-                print("new state:", current_state.x, current_state.y, current_state.orientation)
                 if(to_location == "place_area_location"):
                     current_state, extra_actions = self.face_goal(current_state, load_locations)
-                    # move_seq = move_seq + self.face_goal(current_state, load_locations)
                     move_seq = move_seq + extra_actions
-                    print("facing goal state:", current_state.x, current_state.y, current_state.orientation)
                 if(not goal_reached):
                     print("Path not possible. Rerun")
                     return
