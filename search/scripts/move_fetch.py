@@ -9,7 +9,7 @@ from geometry_msgs.msg import Pose
 import tf
 import actionlib
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
-mazeScale = 1
+mazeScale = 0.5
 
 # Move base using navigation stack
 class MoveBaseClient(object):
