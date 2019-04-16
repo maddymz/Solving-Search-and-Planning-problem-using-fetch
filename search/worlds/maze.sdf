@@ -128,73 +128,73 @@
 <wrench>0 0 0 0 -0 0</wrench>
 </link>
 </model>
-<model name='can12.56467760738'>
-<pose>1 2.56467760738 -2e-06 1e-06 0 -9.5e-05</pose>
+<model name='can2.430691266622'>
+<pose>2.43069126662 2 -2e-06 1e-06 0 -9.5e-05</pose>
 <link name='link'>
-<pose>1 2.56467760738 0.114998 1e-06 0 -9.5e-05</pose>
+<pose>2.43069126662 2 0.114998 1e-06 0 -9.5e-05</pose>
 <velocity>0 0 0 0 -0 0</velocity>
 <acceleration>0 0 -9.8 0 -0 0</acceleration>
 <wrench>0 0 -3.822 0 -0 0</wrench>
 </link>
 </model>
-<model name='can1.154426673094'>
-<pose>1.15442667309 4 -2e-06 1e-06 0 -9.5e-05</pose>
+<model name='can41.48422287647'>
+<pose>4 1.48422287647 -2e-06 1e-06 0 -9.5e-05</pose>
 <link name='link'>
-<pose>1.15442667309 4 0.114998 1e-06 0 -9.5e-05</pose>
+<pose>4 1.48422287647 0.114998 1e-06 0 -9.5e-05</pose>
 <velocity>0 0 0 0 -0 0</velocity>
 <acceleration>0 0 -9.8 0 -0 0</acceleration>
 <wrench>0 0 -3.822 0 -0 0</wrench>
 </link>
 </model>
-<model name='can41.70034532633'>
-<pose>4 1.70034532633 -2e-06 1e-06 0 -9.5e-05</pose>
+<model name='can3.317977943363'>
+<pose>3.31797794336 3 -2e-06 1e-06 0 -9.5e-05</pose>
 <link name='link'>
-<pose>4 1.70034532633 0.114998 1e-06 0 -9.5e-05</pose>
+<pose>3.31797794336 3 0.114998 1e-06 0 -9.5e-05</pose>
 <velocity>0 0 0 0 -0 0</velocity>
 <acceleration>0 0 -9.8 0 -0 0</acceleration>
 <wrench>0 0 -3.822 0 -0 0</wrench>
 </link>
 </model>
-<model name='can3.818226721351'>
-<pose>3.81822672135 1 -2e-06 1e-06 0 -9.5e-05</pose>
+<model name='can3.20867506222'>
+<pose>3.2086750622 2 -2e-06 1e-06 0 -9.5e-05</pose>
 <link name='link'>
-<pose>3.81822672135 1 0.114998 1e-06 0 -9.5e-05</pose>
+<pose>3.2086750622 2 0.114998 1e-06 0 -9.5e-05</pose>
 <velocity>0 0 0 0 -0 0</velocity>
 <acceleration>0 0 -9.8 0 -0 0</acceleration>
 <wrench>0 0 -3.822 0 -0 0</wrench>
 </link>
 </model>
-<model name='can3.407307832292'>
-<pose>3.40730783229 2 -2e-06 1e-06 0 -9.5e-05</pose>
+<model name='can1.422012794423'>
+<pose>1.42201279442 3 -2e-06 1e-06 0 -9.5e-05</pose>
 <link name='link'>
-<pose>3.40730783229 2 0.114998 1e-06 0 -9.5e-05</pose>
+<pose>1.42201279442 3 0.114998 1e-06 0 -9.5e-05</pose>
 <velocity>0 0 0 0 -0 0</velocity>
 <acceleration>0 0 -9.8 0 -0 0</acceleration>
 <wrench>0 0 -3.822 0 -0 0</wrench>
 </link>
 </model>
-<model name='can1.287868815873'>
-<pose>1.28786881587 3 -2e-06 1e-06 0 -9.5e-05</pose>
+<model name='can42.42594125713'>
+<pose>4 2.42594125713 -2e-06 1e-06 0 -9.5e-05</pose>
 <link name='link'>
-<pose>1.28786881587 3 0.114998 1e-06 0 -9.5e-05</pose>
+<pose>4 2.42594125713 0.114998 1e-06 0 -9.5e-05</pose>
 <velocity>0 0 0 0 -0 0</velocity>
 <acceleration>0 0 -9.8 0 -0 0</acceleration>
 <wrench>0 0 -3.822 0 -0 0</wrench>
 </link>
 </model>
-<model name='can2.12715997174'>
-<pose>2.1271599717 4 -2e-06 1e-06 0 -9.5e-05</pose>
+<model name='can2.236545572811'>
+<pose>2.23654557281 1 -2e-06 1e-06 0 -9.5e-05</pose>
 <link name='link'>
-<pose>2.1271599717 4 0.114998 1e-06 0 -9.5e-05</pose>
+<pose>2.23654557281 1 0.114998 1e-06 0 -9.5e-05</pose>
 <velocity>0 0 0 0 -0 0</velocity>
 <acceleration>0 0 -9.8 0 -0 0</acceleration>
 <wrench>0 0 -3.822 0 -0 0</wrench>
 </link>
 </model>
-<model name='can21.85143521651'>
-<pose>2 1.85143521651 -2e-06 1e-06 0 -9.5e-05</pose>
+<model name='can30.631958081008'>
+<pose>3 0.631958081008 -2e-06 1e-06 0 -9.5e-05</pose>
 <link name='link'>
-<pose>2 1.85143521651 0.114998 1e-06 0 -9.5e-05</pose>
+<pose>3 0.631958081008 0.114998 1e-06 0 -9.5e-05</pose>
 <velocity>0 0 0 0 -0 0</velocity>
 <acceleration>0 0 -9.8 0 -0 0</acceleration>
 <wrench>0 0 -3.822 0 -0 0</wrench>
@@ -364,7 +364,7 @@
 </link>
 <pose>-0.779308 4.01849 0 0 -0 0</pose>
 </model>
-<model name='can12.56467760738'>
+<model name='can2.430691266622'>
 <link name='link'>
 <pose>0 0 0.115 0 -0 0</pose>
 <inertial>
@@ -416,7 +416,7 @@
 </link>
 <pose>0.888525 -2.58346 0 0 -0 0</pose>
 </model>
-<model name='can1.154426673094'>
+<model name='can41.48422287647'>
 <link name='link'>
 <pose>0 0 0.115 0 -0 0</pose>
 <inertial>
@@ -468,7 +468,7 @@
 </link>
 <pose>0.888525 -2.58346 0 0 -0 0</pose>
 </model>
-<model name='can41.70034532633'>
+<model name='can3.317977943363'>
 <link name='link'>
 <pose>0 0 0.115 0 -0 0</pose>
 <inertial>
@@ -520,7 +520,7 @@
 </link>
 <pose>0.888525 -2.58346 0 0 -0 0</pose>
 </model>
-<model name='can3.818226721351'>
+<model name='can3.20867506222'>
 <link name='link'>
 <pose>0 0 0.115 0 -0 0</pose>
 <inertial>
@@ -572,7 +572,7 @@
 </link>
 <pose>0.888525 -2.58346 0 0 -0 0</pose>
 </model>
-<model name='can3.407307832292'>
+<model name='can1.422012794423'>
 <link name='link'>
 <pose>0 0 0.115 0 -0 0</pose>
 <inertial>
@@ -624,7 +624,7 @@
 </link>
 <pose>0.888525 -2.58346 0 0 -0 0</pose>
 </model>
-<model name='can1.287868815873'>
+<model name='can42.42594125713'>
 <link name='link'>
 <pose>0 0 0.115 0 -0 0</pose>
 <inertial>
@@ -676,7 +676,7 @@
 </link>
 <pose>0.888525 -2.58346 0 0 -0 0</pose>
 </model>
-<model name='can2.12715997174'>
+<model name='can2.236545572811'>
 <link name='link'>
 <pose>0 0 0.115 0 -0 0</pose>
 <inertial>
@@ -728,7 +728,7 @@
 </link>
 <pose>0.888525 -2.58346 0 0 -0 0</pose>
 </model>
-<model name='can21.85143521651'>
+<model name='can30.631958081008'>
 <link name='link'>
 <pose>0 0 0.115 0 -0 0</pose>
 <inertial>

@@ -247,6 +247,9 @@ class RobotActionsServer:
 					y = self.object_dict["cubes"][cube_name]["loc"][1] 
 					z = 0.029231
 					self.head_action.look_at(x, y, z, "map")
+					# self.head_action.look_at(x, y-1, z, "map")
+					# self.head_action.look_at(x-1, y, z, "map")
+					# self.head_action.look_at(x, y, z, "map")
 									
 					rospy.loginfo("Searching Graspable objects...")
 					self.grasping_client.updateScene()
