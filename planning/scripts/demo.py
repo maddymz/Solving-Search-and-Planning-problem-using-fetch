@@ -360,7 +360,7 @@ if __name__ == "__main__":
     x = load_location[0]
     y = load_location[1]
     # quat = (robot_pose.orientation.x, robot_pose.orientation.y, robot_pose.orientation.z, 1)#robot_pose.orientation.w)
-    quat = (robot_pose.orientation.x, robot_pose.orientation.y, 1, 1)#robot_pose.orientation.w)
+    quat = (robot_pose.orientation.x, robot_pose.orientation.y, 100, 1)#robot_pose.orientation.w)
     move_base.goto(x,y,quat,None)
     rospy.Rate(3).sleep()
 

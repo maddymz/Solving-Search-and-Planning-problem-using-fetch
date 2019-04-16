@@ -43,7 +43,7 @@ def add_cube_descriptions(f_out, coords):
         f_out.write('''<static>0</static>
             <link name='link'>
                 <inertial>
-                    <mass>0.25</mass>
+                    <mass>0.05</mass>
                     <inertia>
                         <ixx>0.001</ixx>
                         <ixy>0</ixy>

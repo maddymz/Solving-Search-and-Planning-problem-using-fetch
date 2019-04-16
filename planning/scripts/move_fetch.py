@@ -18,6 +18,7 @@ class MoveBaseClient(object):
         self.client = actionlib.SimpleActionClient("move_base", MoveBaseAction)
         rospy.loginfo("Waiting for move_base...")
         self.client.wait_for_server()
+		
         rospy.loginfo("Move base connected")
 
     def goto(self, x, y, quat, frame="map"):
@@ -62,6 +63,12 @@ class moveFetch:
 		self.robot_x = 0
 		self.robot_y = 0
 		self.robot_orient = "EAST"
+		self.orientation_dictionary = {
+			"NORTH" : 1,
+			"EAST" : 0,
+			"SOUTH" : -1,
+			"WEST" : 50
+		}
 		self.rate = rospy.Rate(30)
 		print("Ready")
 		rospy.spin()
@@ -70,7 +77,7 @@ class moveFetch:
 		self.robot_pose = data.pose.pose
 
 	def get_new_location(self, x, y, orient, action):
-		quat = (self.robot_pose.orientation.x, self.robot_pose.orientation.y, self.robot_pose.orientation.z, self.robot_pose.orientation.w)
+		
 		if action == "MoveF":
 			if orient == "EAST":
 				x+=mazeScale
@@ -90,8 +97,8 @@ class moveFetch:
 			else:
 				y-=mazeScale
 		elif action == "TurnCW":
-			euler = tf.transformations.euler_from_quaternion(quat)
-			quat = tf.transformations.quaternion_from_euler(euler[0], euler[1], euler[2] - math.pi/2.0)
+			# euler = tf.transformations.euler_from_quaternion(quat)
+			# quat = tf.transformations.quaternion_from_euler(euler[0], euler[1], euler[2] - math.pi/2.0)
 			if orient == "EAST":
 				orient = "SOUTH"
 			elif orient == "WEST":
@@ -101,8 +108,8 @@ class moveFetch:
 			else:
 				orient = "EAST"
 		elif action == "TurnCCW":
-			euler = tf.transformations.euler_from_quaternion(quat)
-			quat = tf.transformations.quaternion_from_euler(euler[0], euler[1], euler[2] + math.pi/2.0)
+			# euler = tf.transformations.euler_from_quaternion(quat)
+			# quat = tf.transformations.quaternion_from_euler(euler[0], euler[1], euler[2] + math.pi/2.0)
 			if orient == "EAST":
 				orient = "NORTH"
 			elif orient == "WEST":
@@ -111,6 +118,7 @@ class moveFetch:
 				orient = "EAST"
 			else:
 				orient = "WEST"
+		quat = (self.robot_pose.orientation.x, self.robot_pose.orientation.y, self.orientation_dictionary[orient], 1)#self.robot_pose.orientation.w)
 		return x, y, quat, orient
 
 	def action_callback(self, data):
