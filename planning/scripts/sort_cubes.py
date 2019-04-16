@@ -15,11 +15,12 @@ class Executioner:
 
     def __init__(self):
         rospy.init_node('listener', anonymous=True)
-        self.json_file_path = r"/home/abhyudaya/catkin_ws/src/planning/books.json" #path to books.json
+        self.json_file_path = r"/home/abhyudaya/catkin_ws/src/planning/cubes.json" #path to cubes.json
         self.plan_path = r"sas_plan" #path to generated plan file
-        self.domain_file_path = r'/home/abhyudaya/catkin_ws/src/Planning/domain.pddl' #path to domain file
-        self.problem_file_path = r'/home/abhyudaya/catkin_ws/src/Planning/problem.pddl' #path to problem file
-        self.FD_file_path = r'/home/abhyudaya/catkin_ws/src/Planning/scripts/FD/fast-downward.py' #path to FD folder
+        self.domain_file_path = r'/home/abhyudaya/catkin_ws/src/planning/domain.pddl' #path to domain file
+        self.problem_file_path = r'/home/abhyudaya/catkin_ws/src/planning/problem.pddl' #path to problem file
+        self.FD_file_path = r'/home/abhyudaya/catkin_ws/src/planning/scripts/FD/fast-downward.py' #path to FD folder
+        
         with open(self.json_file_path) as f:
             self.env_data = json.load(f)
 
@@ -29,6 +30,8 @@ class Executioner:
         print("Plan found in: ", end - start)
         print("******************REFINED ACTION PLAN**************************************")
         for action in self.actions:
+            if(action[0] == 'move'):
+                print(action[0], action[1], action[2].x, action[2].y, action[2].orientation)
             print(action)
         print("***************************************************************************")
         
@@ -57,14 +60,15 @@ class Executioner:
             self.current_state = goal_location
             print("Reached location:", self.current_state.x, self.current_state.y, self.current_state.orientation)
         elif(action[0] == "pick"):
-            book_name = action[1]
-            response = problem.execute_pick_action(book_name, self.current_state)
+            cube_name = action[1]
+            response = problem.execute_pick_action(cube_name, self.current_state)
             if(response == -1):
                 print("Unsuccessful Pick")
         elif(action[0] == "place"):
-            book_name = action[1]
-            bin_name = action[2]
-            response = problem.execute_place_action(book_name, bin_name, self.current_state)
+            cube_name = action[1]
+            # bin_name = action[2]
+            response = problem.execute_place_action(cube_name, '', self.current_state)
+            # response = problem.execute_place_action(book_name, bin_name, self.current_state)
             if(response == -1):
                 print("Unsuccessful Place")
 
@@ -92,9 +96,9 @@ class Executioner:
         states = []
         for location in locations:
             states.append(problem.State(location[0], location[1], "EAST"))
-            states.append(problem.State(location[0], location[1], "WEST"))
-            states.append(problem.State(location[0], location[1], "NORTH"))
-            states.append(problem.State(location[0], location[1], "SOUTH"))
+            # states.append(problem.State(location[0], location[1], "WEST"))
+            # states.append(problem.State(location[0], location[1], "NORTH"))
+            # states.append(problem.State(location[0], location[1], "SOUTH"))
         return states
 
     def get_path_gbfs(self, init_state, goal_locations):
@@ -144,48 +148,80 @@ class Executioner:
         return action_list, final_state, goal_reached
 
     def get_load_locations(self, location):
+        if(location == "place_area_location"):
+            return self.env_data["place_loc"]
         obj = location[:location.index("_iloc")]
-        if(obj.startswith("book")):
-            return self.env_data["books"][obj]["load_loc"]
-        elif(obj.startswith("trolly")):
-            return self.env_data["bins"][obj]["load_loc"]
+        if(obj.startswith("cube")):
+            return self.env_data["cubes"][obj]["load_loc"]
+
+    def face_goal(self, state, load_locations):
+        if state.x == load_locations[0][0] and state.y == load_locations[0][1]:
+            #face north
+            if state.orientation == "NORTH":
+                actions = []
+            if state.orientation == "SOUTH":
+                actions = ["TurnCW", "TurnCW"]
+            if state.orientation == "EAST":
+                actions = ["TurnCCW"]
+            if state.orientation == "WEST":
+                actions = ["TurnCW"]
+            state.orientation = "NORTH"
+        if state.x == load_locations[1][0] and state.y == load_locations[1][1]:
+            #face east
+            if state.orientation == "NORTH":
+                actions = ["TurnCW"]
+            if state.orientation == "SOUTH":
+                actions = ["TurnCW"]
+            if state.orientation == "EAST":
+                actions = []
+            if state.orientation == "WEST":
+                actions = ["TurnCW", "TurnCW"]
+            state.orientation = "EAST"
+        return state, actions
+
 
     def parse_plan(self):
-        # run_planner_command = self.FD_file_path + " " + self.domain_file_path + " " + self.problem_file_path + " --search \"lazy_greedy([ff()], preferred=[ff()])\""
-        # process = Popen(run_planner_command, stdout=PIPE, stderr=PIPE, shell=True)
-        # stdout, stderr = process.communicate()
-        # # print(stdout) #print output of planner
-        # # print(stderr)
-        # process.wait()
+        run_planner_command = self.FD_file_path + " " + self.domain_file_path + " " + self.problem_file_path + " --search \"lazy_greedy([ff()], preferred=[ff()])\""
+        process = Popen(run_planner_command, stdout=PIPE, stderr=PIPE, shell=True)
+        stdout, stderr = process.communicate()
+        print(stdout) #print output of planner
+        print(stderr)
+        process.wait()
         current_state = problem.get_initial_state()
         actions = []
-        # f = open(self.plan_path, mode='r')
-        f = ["move fetch x book_1_iloc"]
+        f = open(self.plan_path, mode='r')
+        # f = ["move fetch x book_1_iloc", "pick book_1"]
         for line in f:
             # print(line)
             line = line.strip() #remove whitespace
-            # line = line[1:] #remove brackets
-            # line = line[:-1]
+            line = line[1:] #remove brackets
+            line = line[:-1]
             args = line.split(' ')
             # print(args)
             if(args[0] == "move"): #perform downward refinement
                 from_location = args[2]
                 to_location = args[3]
-                load_locations = self.get_load_locations(to_location)
                 print(from_location, to_location)
-                print(current_state.x, current_state.y, " to ", load_locations)
+                load_locations = self.get_load_locations(to_location)
+                
+                print(current_state.x, current_state.y, current_state.orientation, " to ", load_locations)
                 move_seq, current_state, goal_reached = self.get_path_gbfs(current_state, load_locations)
+                print("new state:", current_state.x, current_state.y, current_state.orientation)
+                if(to_location == "place_area_location"):
+                    current_state, extra_actions = self.face_goal(current_state, load_locations)
+                    # move_seq = move_seq + self.face_goal(current_state, load_locations)
+                    move_seq = move_seq + extra_actions
+                    print("facing goal state:", current_state.x, current_state.y, current_state.orientation)
                 if(not goal_reached):
                     print("Path not possible. Rerun")
                     return
                 actions.append(("move", move_seq, current_state))
             elif(args[0] == "pick"):
-                book = args[1]
-                actions.append(("pick", book))
+                cube = args[1]
+                actions.append(("pick", cube))
             elif(args[0] == "place"):
-                book = args[1]
-                bin_ = args[4]
-                actions.append(("place", book, bin_))
+                cube = args[1]
+                actions.append(("place", cube))
         return actions
 
 if __name__ == "__main__":

@@ -132,187 +132,7 @@
 <pose>1.25 3.0 0.029231 0 0 0</pose>
 </model><model name='cube_2'>
 <pose>1.25 2.0 0.029231 0 0 0</pose>
-</model><model name='trolly_1'><pose>2 1 0 0 -0 0</pose><link name='link_20'><pose>2 1 0 0 -0 0</pose><velocity>0 0 0 0 -0 0</velocity><acceleration>0 0 0 0 -0 0</acceleration><wrench>0 0 0 0 -0 0</wrench></link></model><model name='trolly_2'><pose>2 3 0 0 -0 0</pose><link name='link_20'><pose>2 3 0 0 -0 0</pose><velocity>0 0 0 0 -0 0</velocity><acceleration>0 0 0 0 -0 0</acceleration><wrench>0 0 0 0 -0 0</wrench></link></model></state><model name='trolly_1'>
-<link name='link'>
-<pose>0 0 0 0 -0 0</pose>
-<inertial>
-<mass>1</mass>
-<pose>0 0 0 0 -0 0</pose>
-<inertia>
-<ixx>1</ixx>
-<ixy>0</ixy>
-<ixz>0</ixz>
-<iyy>1</iyy>
-<iyz>0</iyz>
-<izz>1</izz>
-</inertia>
-</inertial>
-<self_collide>0</self_collide>
-<kinematic>0</kinematic>
-<gravity>1</gravity>
-<visual name='visual'>
-<geometry>
-<mesh>
-<uri>model://bookcart/meshes/bookcart.dae</uri>
-</mesh>
-</geometry>
-<pose>0 0 0 0 -0 0</pose>
-<cast_shadows>1</cast_shadows>
-<transparency>0</transparency>
-<material>
-<ambient>1.0 0.0 0.0 0</ambient>
-<diffuse>1.0 0.0 0.0 0</diffuse>
-<specular>0 0 0 1</specular>
-<emissive>0 0 0 1</emissive>
-<script>
-<name>ModelPreview_1::link::visual_MATERIAL_</name>
-<uri>__default__</uri>
-</script>
-<shader type='vertex'>
-<normal_map>__default__</normal_map>
-</shader>
-</material>
-</visual>
-<collision name='collision_0'>
-<laser_retro>0</laser_retro>
-<max_contacts>10</max_contacts>
-<pose>0 0 0 0 -0 0</pose>
-<geometry>
-<mesh>
-<uri>model://bookcart/meshes/bookcart.dae</uri>
-</mesh>
-</geometry>
-<surface>
-<friction>
-<ode>
-<mu>1</mu>
-<mu2>1</mu2>
-<fdir1>0 0 0</fdir1>
-<slip1>0</slip1>
-<slip2>0</slip2>
-</ode>
-</friction>
-<bounce>
-<restitution_coefficient>0</restitution_coefficient>
-<threshold>1e+06</threshold>
-</bounce>
-<contact>
-<collide_without_contact>0</collide_without_contact>
-<collide_without_contact_bitmask>1</collide_without_contact_bitmask>
-<ode>
-<soft_cfm>0</soft_cfm>
-<soft_erp>0.2</soft_erp>
-<kp>1e+13</kp>
-<kd>1</kd>
-<max_vel>0.01</max_vel>
-<min_depth>0</min_depth>
-</ode>
-<bullet>
-<split_impulse>1</split_impulse>
-<split_impulse_penetration_threshold>-0.01</split_impulse_penetration_threshold>
-<soft_cfm>0</soft_cfm>
-<soft_erp>0.2</soft_erp>
-<kp>1e+13</kp>
-<kd>1</kd>
-</bullet>
-</contact>
-</surface>
-</collision>
-</link>
-<static>1</static>
-<allow_auto_disable>1</allow_auto_disable>
-<pose>1.06777 -0.068202 0 0 -0 0</pose>
-</model><model name='trolly_2'>
-<link name='link'>
-<pose>0 0 0 0 -0 0</pose>
-<inertial>
-<mass>1</mass>
-<pose>0 0 0 0 -0 0</pose>
-<inertia>
-<ixx>1</ixx>
-<ixy>0</ixy>
-<ixz>0</ixz>
-<iyy>1</iyy>
-<iyz>0</iyz>
-<izz>1</izz>
-</inertia>
-</inertial>
-<self_collide>0</self_collide>
-<kinematic>0</kinematic>
-<gravity>1</gravity>
-<visual name='visual'>
-<geometry>
-<mesh>
-<uri>model://bookcart/meshes/bookcart.dae</uri>
-</mesh>
-</geometry>
-<pose>0 0 0 0 -0 0</pose>
-<cast_shadows>1</cast_shadows>
-<transparency>0</transparency>
-<material>
-<ambient>1.0 0.0 0.0 0</ambient>
-<diffuse>1.0 0.0 0.0 0</diffuse>
-<specular>0 0 0 1</specular>
-<emissive>0 0 0 1</emissive>
-<script>
-<name>ModelPreview_1::link::visual_MATERIAL_</name>
-<uri>__default__</uri>
-</script>
-<shader type='vertex'>
-<normal_map>__default__</normal_map>
-</shader>
-</material>
-</visual>
-<collision name='collision_0'>
-<laser_retro>0</laser_retro>
-<max_contacts>10</max_contacts>
-<pose>0 0 0 0 -0 0</pose>
-<geometry>
-<mesh>
-<uri>model://bookcart/meshes/bookcart.dae</uri>
-</mesh>
-</geometry>
-<surface>
-<friction>
-<ode>
-<mu>1</mu>
-<mu2>1</mu2>
-<fdir1>0 0 0</fdir1>
-<slip1>0</slip1>
-<slip2>0</slip2>
-</ode>
-</friction>
-<bounce>
-<restitution_coefficient>0</restitution_coefficient>
-<threshold>1e+06</threshold>
-</bounce>
-<contact>
-<collide_without_contact>0</collide_without_contact>
-<collide_without_contact_bitmask>1</collide_without_contact_bitmask>
-<ode>
-<soft_cfm>0</soft_cfm>
-<soft_erp>0.2</soft_erp>
-<kp>1e+13</kp>
-<kd>1</kd>
-<max_vel>0.01</max_vel>
-<min_depth>0</min_depth>
-</ode>
-<bullet>
-<split_impulse>1</split_impulse>
-<split_impulse_penetration_threshold>-0.01</split_impulse_penetration_threshold>
-<soft_cfm>0</soft_cfm>
-<soft_erp>0.2</soft_erp>
-<kp>1e+13</kp>
-<kd>1</kd>
-</bullet>
-</contact>
-</surface>
-</collision>
-</link>
-<static>1</static>
-<allow_auto_disable>1</allow_auto_disable>
-<pose>1.06777 -0.068202 0 0 -0 0</pose>
-</model><model name='wall1'>
+</model></state><model name='wall1'>
 <static>1</static>
 <link name='link'>
 <pose>0 0 0.42 0 -0 0</pose>
@@ -497,7 +317,7 @@
                 <collision name='collision'>
                     <geometry>
                         <box>
-                            <size>0.06 0.06 0.06</size>
+                            <size>0.063462 0.063462 0.063462</size>
                         </box>
                     </geometry>
                     <surface>
@@ -522,13 +342,13 @@
                 <visual name='visual'>
                     <geometry>
                         <box>
-                            <size>0.06 0.06 0.06</size>
+                            <size>0.063462 0.063462 0.063462</size>
                         </box>
                     </geometry>
                     <material>
                         <script>
                             <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Red</name>
+                            <name>Gazebo/Blue</name>
                         </script>
                     </material>
                 </visual>
@@ -541,13 +361,7 @@
                 <gravity>1</gravity>
             </link>
             <pose>0 1 0 0 -0 0</pose>
-            </model><gui fullscreen='0'>
-<camera name='user_camera'>
-<pose>5 -5 2 0 0.275643 2.35619</pose>
-<view_controller>orbit</view_controller>
-</camera>
-</gui>
-<model name='cube_2'>
+            </model><model name='cube_2'>
 <static>0</static>
             <link name='link'>
                 <inertial>
@@ -564,7 +378,7 @@
                 <collision name='collision'>
                     <geometry>
                         <box>
-                            <size>0.06 0.06 0.06</size>
+                            <size>0.063462 0.063462 0.063462</size>
                         </box>
                     </geometry>
                     <surface>
@@ -589,13 +403,13 @@
                 <visual name='visual'>
                     <geometry>
                         <box>
-                            <size>0.06 0.06 0.06</size>
+                            <size>0.063462 0.063462 0.063462</size>
                         </box>
                     </geometry>
                     <material>
                         <script>
                             <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Red</name>
+                            <name>Gazebo/Blue</name>
                         </script>
                     </material>
                 </visual>

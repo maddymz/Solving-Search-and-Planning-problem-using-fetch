@@ -1,30 +1,17 @@
 (define (problem p01)
-(:domain bookWorld)
+(:domain cubeWorld)
 (:objects
-tbot3 - robot
-tbot3_init_loc - location
-book_1 book_2 - book
-trolly_2 trolly_1 - bin
-book_1_iloc book_2_iloc - location
-trolly_2_iloc trolly_1_iloc - location
-Operating_Systems_Architecture - subject
-small large - size
+fetch - robot
+cube_1 cube_2 - cube
+place_area_location - location
+fetch_init_loc - location
+cube_1_iloc cube_2_iloc - location
 )
 (:init
-(Book_At book_1 book_1_iloc)
-(Book_At book_2 book_2_iloc)
-(Bin_At trolly_2 trolly_2_iloc)
-(Bin_At trolly_1 trolly_1_iloc)
-(Book_Subject book_1 Operating_Systems_Architecture)
-(Book_Size book_1 small)
-(Book_Subject book_2 Operating_Systems_Architecture)
-(Book_Size book_2 large)
-(Bin_Subject trolly_2 Operating_Systems_Architecture)
-(Bin_Size trolly_2 small)
-(Bin_Subject trolly_1 Operating_Systems_Architecture)
-(Bin_Size trolly_1 large)
-(Robot_At tbot3 tbot3_init_loc)
-(Empty_Basket tbot3)
+(Cube_At cube_1 cube_1_iloc)
+(Cube_At cube_2 cube_2_iloc)
+(Robot_At fetch fetch_init_loc)
+(Empty_Basket fetch)
 )
-(:goal ENTER YOUR GOAL FORMULA HERE )
+(:goal (and (Cube_At cube_1 place_area_location) (Cube_At cube_2 place_area_location) ) )
 )

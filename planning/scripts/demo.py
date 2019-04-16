@@ -61,7 +61,7 @@ class MoveBaseClient(object):
         self.client.wait_for_server()
         rospy.loginfo("Move base connected")
 
-    def goto(self, x, y, quat, frame="map"):
+    def goto(self, x, y, quat, callback, frame="map"):
         # global pose
         print("goto ", x, y, quat)
         move_goal = MoveBaseGoal()
@@ -85,7 +85,9 @@ class MoveBaseClient(object):
         # TODO wait for things to work
         self.client.send_goal(move_goal)
         self.client.wait_for_result()
-
+        if callback != None:
+            callback()
+        
 # Send a trajectory to controller
 class FollowTrajectoryClient(object):
 
@@ -122,6 +124,7 @@ class PointHeadClient(object):
         self.client.wait_for_server()
 
     def look_at(self, x, y, z, frame, duration=1.0):
+        print("looking at ",x,y,z,frame)
         goal = PointHeadGoal()
         goal.target.header.stamp = rospy.Time.now()
         goal.target.header.frame_id = frame
@@ -152,6 +155,8 @@ class GraspingClient(object):
         self.find_client.send_goal(goal)
         self.find_client.wait_for_result(rospy.Duration(5.0))
         find_result = self.find_client.get_result()
+        # print(find_result)
+        
 
         # remove previous objects
         for name in self.scene.getKnownCollisionObjects():
@@ -189,27 +194,34 @@ class GraspingClient(object):
         # store for grasping
         self.objects = find_result.objects
         self.surfaces = find_result.support_surfaces
-
+        print("objects: ",len(self.objects))
+        print("surfaces: ",len(self.surfaces))
+    
     def getGraspableCube(self):
         graspable = None
+        graspable_objects = []
         for obj in self.objects:
+            print(obj.object.name)
+            print("grasps: ", len(obj.grasps))
             # need grasps
             if len(obj.grasps) < 1:
                 continue
             # check size
-            if obj.object.primitives[0].dimensions[0] < 0.05 or \
-               obj.object.primitives[0].dimensions[0] > 0.07 or \
-               obj.object.primitives[0].dimensions[0] < 0.05 or \
-               obj.object.primitives[0].dimensions[0] > 0.07 or \
-               obj.object.primitives[0].dimensions[0] < 0.05 or \
-               obj.object.primitives[0].dimensions[0] > 0.07:
-                continue
-            # has to be on table
-            if obj.object.primitive_poses[0].position.z < 0.5:
-                continue
-            return obj.object, obj.grasps
+            # if obj.object.primitives[0].dimensions[0] < 0.05 or \
+            #    obj.object.primitives[0].dimensions[0] > 0.07 or \
+            #    obj.object.primitives[0].dimensions[0] < 0.05 or \
+            #    obj.object.primitives[0].dimensions[0] > 0.07 or \
+            #    obj.object.primitives[0].dimensions[0] < 0.05 or \
+            #    obj.object.primitives[0].dimensions[0] > 0.07:
+            #     continue
+            # # has to be on table
+            # if obj.object.primitive_poses[0].position.z < 0.5:
+            #     continue
+            graspable_objects.append((obj.object, obj.grasps))
+            # return obj.object, obj.grasps
         # nothing detected
-        return None, None
+        # return None, None
+        return graspable_objects
 
     def getSupportSurface(self, name):
         for surface in self.support_surfaces:
@@ -221,11 +233,15 @@ class GraspingClient(object):
         pass
 
     def pick(self, block, grasps):
+        print("name: ", block.name)
+        # print("grasps: ", grasps)
+        # print("surface: ",block.support_surface)
         success, pick_result = self.pickplace.pick_with_retry(block.name,
                                                               grasps,
                                                               support_name=block.support_surface,
                                                               scene=self.scene)
         self.pick_result = pick_result
+        print(self.pick_result)
         return success
 
     def place(self, block, pose_stamped):
@@ -264,22 +280,55 @@ def pose_callback(data):
     global robot_pose
     robot_pose = data.pose.pose
 
-def action_callback(data):
-    print(data)
-    global robot_x, robot_y, robot_orient
-    actions = data.data.split('_')
-    for action in actions: #['TurnCW']:#, 'TurnCW', 'TurnCCW']:
-        print("executing ", action)
-        robot_x, robot_y, quat, robot_orient = get_new_location(robot_x, robot_y, robot_orient, action)
-        if(action == "MoveF"):    
-            move_base.goto(robot_x, robot_y, quat)
-        elif(action == "TurnCW"):
-            move_base.goto(robot_x, robot_y, quat)
-        elif(action == "MoveB"):
-            move_base.goto(robot_x, robot_y, quat)
-        else:
-            move_base.goto(robot_x, robot_y, quat)
-        rospy.Rate(1).sleep()
+def goto_callback():
+    # torso_action = FollowTrajectoryClient("torso_controller", ["torso_lift_joint"])
+    head_action = PointHeadClient()
+    # torso_action.move_to([1.872020, ])
+    
+    pick_success = False
+    while not pick_success:
+        x = env_data["books"]["book_1"]["loc"][0]#[0]
+        y = env_data["books"]["book_1"]["loc"][1]#[1]
+        z = 0.029231
+        head_action.look_at(x, y, z, "map")
+        
+        # while not rospy.is_shutdown():
+    
+        rospy.loginfo("Searching Graspable objects...")
+        grasping_client.updateScene()
+        # cube, grasps = grasping_client.getGraspableCube()
+        graspable_objects = grasping_client.getGraspableCube()
+        if len(graspable_objects) == 0:
+            rospy.logwarn("Perception failed.")
+            # continue
+
+        # Pick the block
+        for obj in graspable_objects:
+            if grasping_client.pick(obj[0], obj[1]):
+                pick_success = True
+                cube = obj[0]
+            # grasping_client.pick(cube, grasps)
+            rospy.logwarn("Grasping failed.")
+    
+    grasping_client.tuck()
+
+
+    load_location = env_data["books"]["book_2"]["load_loc"][0]
+    x = load_location[0]
+    y = load_location[1]
+    quat = (robot_pose.orientation.x, robot_pose.orientation.y, robot_pose.orientation.z, 1)#robot_pose.orientation.w)
+    move_base.goto(x,y,quat,None)
+    rospy.Rate(3).sleep()
+
+    while not rospy.is_shutdown():
+        rospy.loginfo("Placing object...")
+        pose = PoseStamped()
+        pose.pose = cube.primitive_poses[0]
+        pose.pose.position.z += 0.05
+        pose.header.frame_id = cube.header.frame_id
+        if grasping_client.place(cube, pose):
+            break
+        rospy.logwarn("Placing failed.")
 
 if __name__ == "__main__":
     # Create a node
@@ -292,7 +341,7 @@ if __name__ == "__main__":
     # Setup clients
     move_base = MoveBaseClient()
     pose_subscriber = rospy.Subscriber('/odom',Odometry,pose_callback)
-    action_subscriber = rospy.Subscriber('/actions',String,action_callback)
+    # action_subscriber = rospy.Subscriber('/actions',String,action_callback)
     # torso_action = FollowTrajectoryClient("torso_controller", ["torso_lift_joint"])
     # head_action = PointHeadClient()
     # grasping_client = GraspingClient()
@@ -301,18 +350,25 @@ if __name__ == "__main__":
 
     # Move the base to be in front of the table
     # Demonstrates the use of the navigation stack
-    with open('/home/abhyudaya/catkin_ws/src/planning/books.json') as f:
+    with open('/home/abhyudaya/catkin_ws/src/planning/cubes.json') as f:
         env_data = json.load(f)
         
-    for book in env_data["books"]: 
-        print("going for ", book)
-        load_location = env_data["books"][book]["load_loc"][0]
-        x = load_location[0]
-        y = load_location[1]
-        quat = (robot_pose.orientation.x, robot_pose.orientation.y, robot_pose.orientation.z, robot_pose.orientation.w)
-        move_base.goto(x,y,quat)
-        rospy.Rate(3).sleep()
+    # for book in env_data["books"]: 
+        # print("going for ", book)
+    load_location = env_data["cubes"]["cube_1"]["load_loc"][0]
+    print(env_data)
+    x = load_location[0]
+    y = load_location[1]
+    # quat = (robot_pose.orientation.x, robot_pose.orientation.y, robot_pose.orientation.z, 1)#robot_pose.orientation.w)
+    quat = (robot_pose.orientation.x, robot_pose.orientation.y, 1, 1)#robot_pose.orientation.w)
+    move_base.goto(x,y,quat,None)
+    rospy.Rate(3).sleep()
 
+    # head_action.look_at(x_b, y_b,z_b, "map")
+    # quat = tf.transformations.quaternion_from_euler(r,p,s)
+    # move_base.goto(x,y,quat, goto_callback)
+    # rospy.Rate(3).sleep()
+    
     # move_base.goto(2.750, 3.118, 0.0)
 
     # # Raise the torso using just a controller
@@ -320,7 +376,10 @@ if __name__ == "__main__":
     # torso_action.move_to([0.4, ])
 
     # # Point the head at the cube we want to pick
-    # head_action.look_at(3.7, 3.18, 0.0, "map")
+    # x = env_data["books"]["book_1"]["load_loc"][0]
+    # y = env_data["books"]["book_1"]["load_loc"][1]
+    # z = 0.029231
+    # head_action.look_at(x, y, z, "map")
 
     # # Get block to pick
     # while not rospy.is_shutdown():
@@ -347,6 +406,8 @@ if __name__ == "__main__":
     # rospy.loginfo("Moving to second table...")
     # move_base.goto(-3.53, 3.75, 1.57)
     # move_base.goto(-3.53, 4.15, 1.57)
+
+    
 
     # # Raise the torso using just a controller
     # rospy.loginfo("Raising torso...")

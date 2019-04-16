@@ -21,7 +21,7 @@ class MoveBaseClient(object):
         rospy.loginfo("Move base connected")
 
     def goto(self, x, y, quat, frame="map"):
-        global pose
+        # global pose
         print("going to ", x , y, quat)
         move_goal = MoveBaseGoal()
         move_goal.target_pose.pose.position.x = x
@@ -58,7 +58,7 @@ class moveFetch:
 		self.action_subscriber = rospy.Subscriber('/actions',String,self.action_callback)
 		self.pose_subscriber = rospy.Subscriber('/odom',Odometry,self.pose_callback)
 		self.status_publisher = rospy.Publisher("/status",String,queue_size = 10)
-		self.free = String(data = "next")
+		self.free = String(data = "Idle")
 		self.robot_x = 0
 		self.robot_y = 0
 		self.robot_orient = "EAST"
@@ -129,6 +129,7 @@ class moveFetch:
 			else:
 				self.move_base.goto(self.robot_x, self.robot_y, quat)
 			rospy.Rate(1).sleep()
+		self.status_publisher.publish(self.free)
 
 if __name__ == "__main__":
 	try:
